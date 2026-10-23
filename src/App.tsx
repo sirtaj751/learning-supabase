@@ -1,9 +1,17 @@
-
 import "./App.css";
 import { useState } from "react";
+import { supabase } from "./supabase-clent";
 
 function App() {
   const [newTask, setnewTask] = useState({title:"",description:""});
+  const handlesumit= async (e:any) => {
+   e.preventDefault() 
+   const{error}=await supabase.from("tasks").insert(newTask)
+   if (error) {
+    console.log("Error in sumitting data",error.message)
+   }
+   setnewTask({title:"",description:""});
+  }
   return (
     <div
       style={{
@@ -15,7 +23,7 @@ function App() {
       <h2>Task Manager CRUD</h2>
 
       {/* Form to add a new task */}
-      <form style={{ marginBottom: "1rem" }}>
+      <form onSubmit={handlesumit} style={{ marginBottom: "1rem" }}>
         <input
           type="text"
           placeholder="Task Title"
