@@ -4,6 +4,13 @@
   padding: 2rem;
   text-align: center;
 }
+.task-card {
+  transition: transform 0.2s ease;
+}
+
+.task-card:hover {
+  transform: scale(1.03);
+}
 
 .logo {
   height: 6em;
