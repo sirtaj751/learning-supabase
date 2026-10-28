@@ -32,7 +32,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={session ? <Home /> : <Navigate to="/auth" replace />}
+          element={session ? <Home session={session} /> : <Navigate to="/auth" replace />}
         />
         <Route
           path="/auth"

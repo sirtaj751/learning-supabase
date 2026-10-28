@@ -1,6 +1,7 @@
 import "./App.css";
 import { useState,useEffect } from "react";
 import { supabase } from "./supabase-client";
+import type { Session } from "@supabase/supabase-js";
 interface Task{
   id:number,
   title:string,
@@ -8,7 +9,7 @@ interface Task{
   created_at:string
 }
 
-function Home() {
+function Home({session}:{session:Session}){
   const [newTask, setnewTask] = useState({title:"",description:""});
   const [readTask, setreadTask] = useState<Task[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -19,7 +20,9 @@ function Home() {
   console.log(editingId, editTask);
   const handlesumit= async (e:any) => {
    e.preventDefault() 
-   const{error}=await supabase.from("tasks").insert(newTask)
+   const { error } = await supabase
+     .from("tasks")
+     .insert({ ...newTask, email: session.user.email });
    if (error) {
     console.log("Error in sumitting data",error.message)
     return;
