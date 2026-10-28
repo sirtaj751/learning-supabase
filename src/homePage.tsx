@@ -13,6 +13,9 @@ function Home() {
   const [readTask, setreadTask] = useState<Task[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTask, setEditTask] = useState({ title: "", description: "" });
+  const logout = async ()=>{
+      await supabase.auth.signOut();
+  }
   console.log(editingId, editTask);
   const handlesumit= async (e:any) => {
    e.preventDefault() 
@@ -107,7 +110,7 @@ function Home() {
           Add Task
         </button>
       </form>
-
+<button onClick={logout}>Logout</button>
       <h2>List of Tasks</h2>
       <ul style={{ listStyle: "none", padding: 0 }}>
         {readTask.map((task) => (

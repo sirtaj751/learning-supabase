@@ -1,6 +1,28 @@
-import { useState } from "react"
+import { useState, type ChangeEvent } from "react";
+import { supabase } from "./supabase-client";
+
 export default function Auth(){
-    const [mode, setmode] = useState("signup")
+    const [SignUp, setSignUp] = useState(false);
+    const [email, setemail] = useState("");
+    const [password, setpassword] = useState("");
+    
+    const handleSubmit = async (e: any) => {
+  e.preventDefault();
+
+  if (SignUp) {
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      console.error("Sign up failed:", error.message);
+      return;
+    }
+  } else {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      console.error("Login failed:", error.message);
+      return;
+    }
+  }
+};
     return <>
     <h2>Welcome To Task Manager</h2>
     <div
@@ -12,23 +34,28 @@ export default function Auth(){
         border:"1.5px solid black"
       }}
     >
-     <h2 >{mode === "signup" ? "SignUp" : "Login"}</h2>
-      <form style={{ marginBottom: "1rem" }}>
+    <h2 >{SignUp ? "SignUp" : "Login"}</h2>
+      <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
         <input
-          type="text"
-          placeholder="Username"
+          type="Email"
+          placeholder="Email"
           className="task-card"
+          value={email}
+          onChange={(e:ChangeEvent<HTMLInputElement>)=>setemail(e.target.value)}
           style={{
             width: "70%",
             marginBottom: "0.5rem",
             padding: "0.65rem",
             borderRadius:"8px"
           }}
+          required
         />
 
         <input
           placeholder="Password"
           type="password"
+          value={password}
+          onChange={(e:ChangeEvent<HTMLInputElement>)=>setpassword(e.target.value)}
           style={{
             width: "70%",
             marginBottom: "0.5rem",
@@ -36,20 +63,22 @@ export default function Auth(){
              borderRadius:"14px"
           }}
            className="task-card"
+           required
         />
         <div>
         <button
           type="submit"
-          style={{ padding: "0.5rem 1rem" }}
+          
+          style={{ padding: "0.5rem 1rem",backgroundColor:"#007bff",color:"white" }}
           className="task-card"
         >
-          {mode==="signup" ? "SignUp":"Login"}
+          {SignUp ? "SignUp":"Login"}
         </button>
         <div style={{padding:"0",margin:"0"}}>
-                    {mode==="signup"?(<p>
-                    Already Have an Account? <span style={{color:"#007bff"}} onClick={()=>setmode('login')}>Login</span>
+                    {SignUp?(<p>
+                    Already Have an Account? <span style={{color:"#007bff"}} onClick={()=>setSignUp(false)}>Login</span>
                     </p>):(
-                        <p>Dont't Have an Account? <span style={{color:"#007bff"}} onClick={()=>setmode('signup')}>SignUp</span></p>
+                      <p>Dont't Have an Account? <span style={{color:"#007bff"}} onClick={()=>setSignUp(true)}>SignUp</span></p>
                     )}
                     </div>
         </div>
@@ -57,4 +86,3 @@ export default function Auth(){
       </div>
     </>
 }
-
